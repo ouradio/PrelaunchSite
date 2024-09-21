@@ -1,0 +1,35 @@
+name: Run FastAPI Tests
+
+on: [pull_request]
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        services:
+            docker:
+                image: docker:19.03.12
+                options: --privileged
+                ports:
+                    - 8000:8000
+
+        steps:
+          - name: Checkout code
+            uses: actions/checkout@v2
+    
+          - name: Set up Docker Buildx
+            uses: docker/setup-buildx-action@v1
+    
+          - name: Build Docker image
+            run: docker build -t fastapi-app .
+    
+          - name: Run Docker container
+            run: docker run -d -p 8000:8000 --name fastapi-container fastapi-app
+    
+          - name: Wait for the service to be up
+            run: |
+              echo "Waiting for the service to be up..."
+              sleep 10
+    
+          - name: Run tests
+            run: docker exec fastapi-container pytest

@@ -6,7 +6,7 @@ __pycache__/
 # Virtual environment
 venv/
 .env/
-.prelaunch/
+.venv/
 
 # Docker-related files
 *.dockerignore
